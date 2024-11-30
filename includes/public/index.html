@@ -1,0 +1,386 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Nash Api - Dashboard</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+        tailwind.config = {
+            darkMode: 'class',
+            theme: {
+                extend: {
+                    fontFamily: {
+                        sans: ['Inter', 'sans-serif'],
+                    },
+                    colors: {
+                        dark: {
+                            bg: '#1a1a1a',
+                            secondary: '#121212',
+                        }
+                    }
+                }
+            }
+        }
+    </script>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&display=swap');
+
+        body {
+            overflow-x: hidden;
+        }
+
+        #sidebar {
+            transition: transform 0.3s ease-in-out;
+            overflow-y: auto;
+            height: 100vh;
+        }
+
+        #main-content {
+            transition: margin-left 0.3s ease-in-out;
+        }
+
+        @media (min-width: 768px) {
+            #sidebar {
+                transform: translateX(0) !important;
+            }
+
+            #main-content {
+                margin-left: 20rem;
+            }
+        }
+
+        @media (max-width: 767px) {
+            #sidebar {
+                transform: translateX(-100%);
+            }
+
+            body.sidebar-open #sidebar {
+                transform: translateX(0);
+            }
+
+            body.sidebar-open #overlay {
+                display: block;
+            }
+        }
+    </style>
+</head>
+
+<body class="min-h-screen font-sans flex bg-gray-50 text-gray-900 dark:bg-dark-bg dark:text-white transition-colors duration-200">
+    <!-- Overlay -->
+    <div id="overlay" class="fixed inset-0 bg-black bg-opacity-50 z-20 hidden md:hidden"></div>
+
+    <!-- Sidebar -->
+    <aside id="sidebar" class="fixed inset-y-0 left-0 w-80 bg-white dark:bg-dark-secondary z-30 border-r border-gray-200 dark:border-gray-800">
+        <div class="flex flex-col h-full">
+            <div class="p-4 border-b border-gray-200 dark:border-gray-800">
+                <h2 class="text-lg font-semibold">NASH API</h2>
+            </div>
+            <div class="p-4">
+                <input type="text" id="api-search" placeholder="Search APIs..." class="w-full p-2 border rounded-md dark:bg-gray-800 dark:border-gray-600 dark:text-white dark:placeholder-gray-400">
+            </div>
+            <div class="flex-grow overflow-y-auto p-4" id="sidebar-content"></div>
+        </div>
+    </aside>
+
+    <!-- Main Content -->
+    <div id="main-content" class="flex-1 flex flex-col min-h-screen">
+        <header class="bg-white dark:bg-dark-secondary border-b border-gray-200 dark:border-gray-800 py-3 transition-colors duration-200">
+            <div class="max-w-7xl mx-auto px-4 flex justify-between items-center">
+                <button id="menuButton" class="hover:bg-gray-100 dark:hover:bg-gray-800 p-2 rounded-md md:hidden" aria-label="Toggle menu">
+                    <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16" />
+                    </svg>
+                </button>
+                <h1 class="text-lg font-semibold">Dashboard</h1>
+                <button id="themeToggle" class="hover:bg-gray-100 dark:hover:bg-gray-800 p-2 rounded-md" aria-label="Toggle theme">
+                    <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 dark:hidden" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M20.354 15.354A9 9 0 018.646 3.646 9.003 9.003 0 0012 21a9.003 9.003 0 008.354-5.646z" />
+                    </svg>
+                    <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 hidden dark:block" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 3v1m0 16v1m9-9h-1M4 12H3m15.364 6.364l-.707-.707M6.343 6.343l-.707-.707m12.728 0l-.707.707M6.343 17.657l-.707.707M16 12a4 4 0 11-8 0 4 4 0 018 0z" />
+                    </svg>
+                </button>
+            </div>
+        </header>
+
+        <main class="flex-grow overflow-y-auto">
+            <div class="max-w-7xl mx-auto px-4 py-6 space-y-6">
+                <section class="bg-white dark:bg-dark-secondary rounded-lg p-6 space-y-4 shadow-sm">
+                    <h2 class="text-xl font-semibold">Welcome to Nash Rest API</h2>
+                    <p class="text-sm text-gray-600 dark:text-gray-300">
+                        A powerful and free API service offering a wide range of features for developers.
+                    </p>
+                    <div class="space-y-2">
+                        <h3 class="text-lg font-semibold">Getting Started:</h3>
+                        <ol class="list-decimal list-inside text-xs text-gray-600 dark:text-gray-300 space-y-1">
+                            <li>Select API category from sidebar</li>
+                            <li>Choose desired endpoint</li>
+                            <li>Review endpoint documentation</li>
+                            <li>Make GET request to endpoint URL</li>
+                            <li>Process JSON response</li>
+                        </ol>
+                    </div>
+                    <div class="space-y-2 mt-6 pt-6 border-t border-gray-200 dark:border-gray-700">
+                        <h3 class="text-lg font-semibold">Terms of Service:</h3>
+                        <ol class="list-decimal list-inside text-xs text-gray-600 dark:text-gray-300 space-y-1">
+                            <li>Do not flood requests.</li>
+                            <li>The owner can change the terms of this API at any time to maintain API quality.</li>
+                            <li>Please don't attack it, it hurts.</li>
+                            <li>The owner is not responsible for what you do while using this website.</li>
+                        </ol>
+                    </div>
+                </section>
+
+                <div class="grid gap-4 md:grid-cols-2">
+                    <div class="bg-white dark:bg-dark-secondary rounded-lg p-4 shadow-sm">
+                        <div class="flex items-center gap-2 text-blue-500 mb-2">
+                            <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 11H5m14 0a2 2 0 012 2v6a2 2 0 01-2 2H5a2 2 0 01-2-2v-6a2 2 0 012-2m14 0V9a2 2 0 00-2-2M5 11V9a2 2 0 012-2m0 0V5a2 2 0 012-2h6a2 2 0 012 2v2M7 7h10" />
+                            </svg>
+                            <h3 class="text-sm text-gray-600 dark:text-gray-400">Total Endpoints</h3>
+                        </div>
+                        <p class="text-2xl font-bold total-endpoints">Loading...</p>
+                    </div>
+                    <div class="bg-white dark:bg-dark-secondary rounded-lg p-4 shadow-sm">
+                        <div class="flex items-center gap-2 text-blue-500 mb-2">
+                            <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2H6a2 2 0 01-2-2V6zM14 6a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2h-2a2 2 0 01-2-2V6zM4 16a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2H6a2 2 0 01-2-2v-2zM14 16a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2h-2a2 2 0 01-2-2v-2z" />
+                            </svg>
+                            <h3 class="text-sm text-gray-600 dark:text-gray-400">Total Categories</h3>
+                        </div>
+                        <p class="text-2xl font-bold total-categories">Loading...</p>
+                    </div>
+                </div>
+            </div>
+        </main>
+
+        <footer class="bg-white dark:bg-dark-secondary shadow-sm mt-auto border-t border-gray-200 dark:border-gray-800">
+            <div class="max-w-7xl mx-auto py-4 px-4 sm:px-6 lg:px-8">
+                <p class="text-center text-sm text-gray-600 dark:text-gray-400">
+                    &copy; <span id="current-year"></span> nashbot. All Rights Reserved.
+                </p>
+            </div>
+        </footer>
+    </div>
+    <script src="function-dash.js"></script>
+    <script>
+        class NashApiDashboard {
+            constructor() {
+                this.apiCache = new Map();
+                this.sidebar = document.getElementById('sidebar');
+                this.mainContent = document.getElementById('main-content');
+                this.overlay = document.getElementById('overlay');
+                this.menuButton = document.getElementById('menuButton');
+                this.searchInput = document.getElementById('api-search');
+                this.themeToggle = document.getElementById('themeToggle');
+                this.isSidebarOpen = false;
+                this.isDesktop = window.innerWidth >= 768;
+                this.init();
+            }
+
+            init() {
+                this.startDateTimeUpdate();
+                this.initSidebar();
+                this.initSearch();
+                this.initResizeHandler();
+                this.setupSidebarToggle();
+                this.setupThemeToggle();
+            }
+
+            startDateTimeUpdate() {
+                document.getElementById('current-year').textContent = new Date().getFullYear();
+            }
+
+            async initSidebar() {
+                const sidebarContent = document.getElementById('sidebar-content');
+                const totalEndpointsElement = document.querySelector('.total-endpoints');
+                const totalCategoriesElement = document.querySelector('.total-categories');
+                try {
+                    const apiList = await this.fetchApiList();
+                    const categories = this.groupByCategory(apiList);
+                    this.renderCategories(categories, sidebarContent);
+                    totalEndpointsElement.textContent = apiList.length;
+                    totalCategoriesElement.textContent = Object.keys(categories).length;
+                    this.setupAccordionListeners();
+                } catch (error) {
+                    console.error(error);
+                    sidebarContent.innerHTML = '<p class="text-red-500">Failed to load API categories</p>';
+                }
+            }
+
+            async fetchApiList() {
+                if (this.apiCache.has('apiList')) {
+                    return this.apiCache.get('apiList');
+                }
+                const response = await fetch('/api-list');
+                const apiList = await response.json();
+                this.apiCache.set('apiList', apiList);
+                return apiList;
+            }
+
+            groupByCategory(apiList) {
+                return apiList.reduce((acc, api) => {
+                    (acc[api.category] = acc[api.category] || []).push(api);
+                    return acc;
+                }, {});
+            }
+
+            renderCategories(categories, container) {
+                Object.entries(categories).sort((a, b) => a[0].localeCompare(b[0])).forEach(([category, items]) => {
+                    if (items.length > 0) {
+                        container.appendChild(this.createAccordion(category, items));
+                    }
+                });
+            }
+
+            createAccordion(category, items) {
+                const accordion = document.createElement('div');
+                accordion.className = 'accordion mb-2';
+                accordion.innerHTML = `
+            <button class="accordion-header w-full text-left flex justify-between items-center p-2 hover:bg-gray-100 dark:hover:bg-gray-800 rounded-md" aria-expanded="false">
+                <span class="font-medium">${this.capitalizeFirstLetter(category)}</span>
+                <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4 text-gray-400 transform transition-transform duration-200" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7" />
+                </svg>
+            </button>
+            <div class="accordion-content hidden pl-4 space-y-1">
+                ${items.sort((a, b) => a.name.localeCompare(b.name)).map(item => `
+                    <div class="api-item p-2 hover:bg-gray-100 dark:hover:bg-gray-800 rounded-md cursor-pointer" onclick="dashboard.useApi('${item.endpoint}')">
+                        <div class="text-sm">${this.capitalizeFirstLetter(item.name)}</div>
+                        <div class="text-xs text-gray-500 dark:text-gray-400">${item.description}</div>
+                    </div>
+                `).join('')}
+            </div>
+        `;
+                return accordion;
+            }
+
+            setupAccordionListeners() {
+                document.querySelectorAll('.accordion-header').forEach(header => {
+                    header.addEventListener('click', this.handleAccordionClick);
+                });
+            }
+
+            handleAccordionClick(e) {
+                e.stopPropagation();
+                const header = e.currentTarget;
+                const content = header.nextElementSibling;
+                const arrow = header.querySelector('svg');
+                const isExpanded = header.getAttribute('aria-expanded') === 'true';
+
+                document.querySelectorAll('.accordion-header[aria-expanded="true"]').forEach(otherHeader => {
+                    if (otherHeader !== header) {
+                        otherHeader.setAttribute('aria-expanded', 'false');
+                        otherHeader.nextElementSibling.classList.add('hidden');
+                        otherHeader.querySelector('svg').classList.remove('rotate-180');
+                    }
+                });
+
+                header.setAttribute('aria-expanded', !isExpanded);
+                content.classList.toggle('hidden');
+                arrow.classList.toggle('rotate-180');
+            }
+
+            setupSidebarToggle() {
+                this.menuButton.addEventListener('click', () => this.toggleSidebar());
+                this.overlay.addEventListener('click', () => this.closeSidebar());
+            }
+
+            toggleSidebar() {
+                if (!this.isDesktop) {
+                    this.isSidebarOpen = !this.isSidebarOpen;
+                    this.updateSidebarState();
+                }
+            }
+
+            closeSidebar() {
+                if (!this.isDesktop) {
+                    this.isSidebarOpen = false;
+                    this.updateSidebarState();
+                }
+            }
+
+            updateSidebarState() {
+                if (!this.isDesktop) {
+                    document.body.classList.toggle('sidebar-open', this.isSidebarOpen);
+                    this.overlay.classList.toggle('hidden', !this.isSidebarOpen);
+                    this.sidebar.style.transform = this.isSidebarOpen ? 'translateX(0)' : 'translateX(-100%)';
+                }
+            }
+
+            initSearch() {
+                this.searchInput.addEventListener('input', this.handleSearch.bind(this));
+            }
+
+            handleSearch(event) {
+                const searchTerm = event.target.value.toLowerCase();
+                const isSearchEmpty = searchTerm === '';
+
+                document.querySelectorAll('.accordion').forEach(accordion => {
+                    const items = accordion.querySelectorAll('.api-item');
+                    let hasVisibleItems = false;
+
+                    items.forEach(item => {
+                        const name = item.querySelector('.text-sm').textContent.toLowerCase();
+                        const description = item.querySelector('.text-xs').textContent.toLowerCase();
+
+                        if (name.includes(searchTerm) || description.includes(searchTerm)) {
+                            item.style.display = '';
+                            hasVisibleItems = true;
+                        } else {
+                            item.style.display = 'none';
+                        }
+                    });
+
+                    if (hasVisibleItems) {
+                        accordion.style.display = '';
+                        accordion.querySelector('.accordion-header').setAttribute('aria-expanded', 'true');
+                        accordion.querySelector('.accordion-content').classList.remove('hidden');
+                        accordion.querySelector('.accordion-header svg').classList.add('rotate-180');
+                    } else {
+                        accordion.style.display = 'none';
+                    }
+
+                    if (isSearchEmpty) {
+                        accordion.querySelector('.accordion-header').setAttribute('aria-expanded', 'false');
+                        accordion.querySelector('.accordion-content').classList.add('hidden');
+                        accordion.querySelector('.accordion-header svg').classList.remove('rotate-180');
+                    }
+                });
+            }
+
+            initResizeHandler() {
+                window.addEventListener('resize', () => {
+                    const wasDesktop = this.isDesktop;
+                    this.isDesktop = window.innerWidth >= 768;
+
+                    if (wasDesktop !== this.isDesktop) {
+                        this.updateSidebarState();
+                    }
+                });
+            }
+
+            setupThemeToggle() {
+                this.themeToggle.addEventListener('click', () => {
+                    toggleTheme();
+                });
+            }
+
+            capitalizeFirstLetter(string) {
+                return string.charAt(0).toUpperCase() + string.slice(1);
+            }
+
+            useApi(endpoint) {
+                window.open(endpoint, '_blank', 'noopener,noreferrer');
+            }
+        }
+
+        document.addEventListener('DOMContentLoaded', () => {
+            window.dashboard = new NashApiDashboard();
+        });
+    </script>
+</body>
+
+</html>
